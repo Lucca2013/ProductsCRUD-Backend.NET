@@ -87,17 +87,22 @@ app.MapPost("/postproducts", async (PostProducts product) =>
 
     if (string.IsNullOrWhiteSpace(imgUrl))
     {
-        return Results.InternalServerError();
+        return Results.StatusCode(500);
     }
 
     using var conn = new NpgsqlConnection(connectionString);
     await conn.OpenAsync();
 
     using var SQL = new NpgsqlCommand(
-        $"INSERT INTO products (name, description, price, img_url) VALUES ('{product.Name}', '{product.Desc}', '{product.Price}', '{imgUrl}')",
+        "INSERT INTO products (name, description, price, img_url) VALUES (@name, @desc, @price, @imgUrl)",
         conn);
+    
+    SQL.Parameters.AddWithValue("@name", product.Name);
+    SQL.Parameters.AddWithValue("@desc", product.Desc);
+    SQL.Parameters.AddWithValue("@price", product.Price);
+    SQL.Parameters.AddWithValue("@imgUrl", imgUrl);
 
-    int rowsAffected = SQL.ExecuteNonQuery();
+    int rowsAffected = await SQL.ExecuteNonQueryAsync();
     Console.WriteLine($"Rows inserted: {rowsAffected}");
 
     return Results.Ok();
@@ -105,16 +110,18 @@ app.MapPost("/postproducts", async (PostProducts product) =>
 
 app.MapDelete("/deleteproducts", async (string id) =>
 {
-    System.Console.WriteLine(id);
+    Console.WriteLine(id);
 
     using var conn = new NpgsqlConnection(connectionString);
     await conn.OpenAsync();
 
     using var SQL = new NpgsqlCommand(
-        $"DELETE FROM products WHERE id = '{id}'",
+        "DELETE FROM products WHERE id = @id",
         conn);
+    
+    SQL.Parameters.AddWithValue("@id", id);
 
-    int rowsAffected = SQL.ExecuteNonQuery();
+    int rowsAffected = await SQL.ExecuteNonQueryAsync(); 
 
     return Results.Ok();
 });

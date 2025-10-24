@@ -7,9 +7,9 @@ namespace task2Backend
 {
     public class PostProducts
     {
-        public string Name { get; set; }
-        public string Desc { get; set; }
-        public string Price { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Desc { get; set; } = string.Empty;
+        public string Price { get; set; } = string.Empty;
         public byte[] ImgUrl { get; set; }
     }
 }
