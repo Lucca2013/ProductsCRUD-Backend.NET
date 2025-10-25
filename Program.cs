@@ -22,6 +22,8 @@ var app = builder.Build();
 
 app.UseCors("AllowAll");
 
+AppContext.SetSwitch("System.Net.DisableIPv6", true);
+
 DotEnv.Load();
 var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
 
