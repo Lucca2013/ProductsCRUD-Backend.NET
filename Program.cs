@@ -21,6 +21,8 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+app.UseCors("AllowAll");
+
 DotEnv.Load();
 var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
 
