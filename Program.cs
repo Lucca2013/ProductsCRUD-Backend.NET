@@ -52,28 +52,35 @@ app.MapGet("/test", () => "API está rodando!");
 
 app.MapGet("/getproducts", async () =>
 {
-    using var conn = new NpgsqlConnection(connectionString);
-    await conn.OpenAsync();
-
-    using var SQL = new NpgsqlCommand("SELECT * FROM products", conn);
-    using var reader = await SQL.ExecuteReaderAsync();
-
-    var products = new List<GetProducts>();
-
-    while (await reader.ReadAsync())
+    try
     {
-        products.Add(new GetProducts
-        {
-            Id = reader.GetInt32(reader.GetOrdinal("id")),
-            Name = reader.GetString(reader.GetOrdinal("name")),
-            Desc = reader.GetString(reader.GetOrdinal("description")),
-            Price = reader.GetString(reader.GetOrdinal("price")),
-            ImgUrl = reader.GetString(reader.GetOrdinal("img_url")),
-            CreatedAt = reader.GetDateTime(reader.GetOrdinal("created_at")).ToString()
-        });
-    }
+        using var conn = new NpgsqlConnection(connectionString);
+        await conn.OpenAsync();
 
-    return Results.Ok(products);
+        using var SQL = new NpgsqlCommand("SELECT * FROM products", conn);
+        using var reader = await SQL.ExecuteReaderAsync();
+
+        var products = new List<GetProducts>();
+
+        while (await reader.ReadAsync())
+        {
+            products.Add(new GetProducts
+            {
+                Id = reader.GetInt32(reader.GetOrdinal("id")),
+                Name = reader.GetString(reader.GetOrdinal("name")),
+                Desc = reader.GetString(reader.GetOrdinal("description")),
+                Price = reader.GetString(reader.GetOrdinal("price")),
+                ImgUrl = reader.GetString(reader.GetOrdinal("img_url")),
+                CreatedAt = reader.GetDateTime(reader.GetOrdinal("created_at")).ToString()
+            });
+        }
+
+        return Results.Ok(products);
+    } catch(Exception err)
+    {
+        System.Console.WriteLine("err: " + err);
+        return Results.Conflict("erro, entrou em catch");
+    }
 });
 
 app.MapPost("/postproducts", async (PostProducts product) =>
@@ -109,7 +116,7 @@ app.MapPost("/postproducts", async (PostProducts product) =>
     using var SQL = new NpgsqlCommand(
         "INSERT INTO products (name, description, price, img_url) VALUES (@name, @desc, @price, @imgUrl)",
         conn);
-    
+
     SQL.Parameters.AddWithValue("@name", product.Name);
     SQL.Parameters.AddWithValue("@desc", product.Desc);
     SQL.Parameters.AddWithValue("@price", product.Price);
@@ -131,10 +138,10 @@ app.MapDelete("/deleteproducts", async (string id) =>
     using var SQL = new NpgsqlCommand(
         "DELETE FROM products WHERE id = @id",
         conn);
-    
+
     SQL.Parameters.AddWithValue("@id", id);
 
-    int rowsAffected = await SQL.ExecuteNonQueryAsync(); 
+    int rowsAffected = await SQL.ExecuteNonQueryAsync();
 
     return Results.Ok();
 });
