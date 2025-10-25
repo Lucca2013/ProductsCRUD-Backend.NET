@@ -25,7 +25,8 @@ namespace task2Backend
                                       $"Username={match.Groups["user"].Value};" +
                                       $"Password={match.Groups["pass"].Value};" +
                                       $"Database={match.Groups["db"].Value};" +
-                                      "SSL Mode=Require;Trust Server Certificate=true";
+                                      "SSL Mode=Require;Trust Server Certificate=true" +
+                                      ";PreferIPv4=true";
             
             return connectionString;
         }
