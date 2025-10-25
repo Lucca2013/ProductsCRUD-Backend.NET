@@ -1,35 +1,33 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 
 namespace task2Backend
 {
     public class ConvertToConnectionString
     {
-        public ConvertToConnectionString(string url)
+        private readonly string _databaseUrl;
+
+        public ConvertToConnectionString(string databaseUrl)
         {
-            Url = url;
+            _databaseUrl = databaseUrl;
         }
-
-        private string Url { get; }
-
         public string convert()
         {
-            var pattern = @"postgres(?:ql)?://(?<user>[^:]+):(?<pass>[^@]+)@(?<host>[^:]+):(?<port>\d+)/(?<db>.+)";
-            var match = Regex.Match(Url, pattern);
+            var match = Regex.Match(_databaseUrl,
+                @"^postgres(ql)?:\/\/(?<user>[^:]+):(?<pass>[^@]+)@(?<host>[^:]+):(?<port>\d+)\/(?<db>.*)$");
 
             if (!match.Success)
-                throw new Exception("Formato inválido de DATABASE_URL");
+            {
+                throw new FormatException("A DATABASE_URL não está no formato 'postgresql://user:pass@host:port/db'.");
+            }
 
-            var user = match.Groups["user"].Value;
-            var pass = match.Groups["pass"].Value;
-            var host = match.Groups["host"].Value;
-            var port = match.Groups["port"].Value;
-            var db = match.Groups["db"].Value;
-
-            return $"Host={host};Port={port};Username={user};Password={pass};Database={db};SSL Mode=Require;Trust Server Certificate=true";
+            string connectionString = $"Host={match.Groups["host"].Value};" +
+                                      $"Port={match.Groups["port"].Value};" +
+                                      $"Username={match.Groups["user"].Value};" +
+                                      $"Password={match.Groups["pass"].Value};" +
+                                      $"Database={match.Groups["db"].Value};" +
+                                      "SSL Mode=Require;Trust Server Certificate=true";
+            
+            return connectionString;
         }
     }
 }
