@@ -5,7 +5,7 @@
 # Technologies used
 
 ### C# .NET for WEB <br>
-### Supabase for database <br>
+### Neon for database <br>
 ### Cloudinary for image storage <br>
 ### Shard Cloud for backend deployment
 
