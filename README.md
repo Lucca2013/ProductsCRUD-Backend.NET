@@ -14,7 +14,7 @@
 ## /getproducts
 how to use:
 ```js
-fetch('https://porductsapi.shardweb.app/getproducts')
+fetch('https://productsapi.shardweb.app/getproducts')
   .then(response => {
     if (!response.ok) {
       throw new Error(`Error in request: ${response.status}`);
@@ -30,7 +30,7 @@ fetch('https://porductsapi.shardweb.app/getproducts')
 ### Note: the imgUrl must be in Base64
 How to use:
 ```js
-fetch('https://porductsapi.shardweb.app/postproducts', {
+fetch('https://productsapi.shardweb.app/postproducts', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json'
@@ -47,7 +47,7 @@ fetch('https://porductsapi.shardweb.app/postproducts', {
 ## /deleteproducts
 How to use:
 ```js
-fetch('https://porductsapi.shardweb.app/deleteproducts?id=idaqui', {
+fetch('https://productsapi.shardweb.app/deleteproducts?id=idaqui', {
   method: 'DELETE', 
   headers: { 
     'Content-Type': 'application/json' 
