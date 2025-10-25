@@ -1,7 +1,6 @@
 using Npgsql;
 using dotenv.net;
 using task2Backend;
-using CloudinaryDotNet;
 
 var builder = WebApplication.CreateBuilder(args);
 
