@@ -47,7 +47,7 @@ fetch('https://productapi.shardweb.app/postproducts', {
 ## /deleteproducts
 How to use:
 ```js
-fetch('https://porductsapi.shardweb.app/deleteproducts?id=idaqui', {
+fetch('https://productapi.shardweb.app/deleteproducts?id=idaqui', {
   method: 'DELETE', 
   headers: { 
     'Content-Type': 'application/json' 
