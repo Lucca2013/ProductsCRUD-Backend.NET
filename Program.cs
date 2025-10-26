@@ -41,10 +41,11 @@ CloudinaryService cloudinary = new CloudinaryService(cloudinaryUrl);
 
 var app = builder.Build();
 
-app.UseHttpsRedirection();
-app.UseRouting();
 app.UseCors("AllowAll");
+app.UseRouting();
 app.UseAuthorization();
+
+app.UseHttpsRedirection();
 
 
 if (app.Environment.IsDevelopment())
