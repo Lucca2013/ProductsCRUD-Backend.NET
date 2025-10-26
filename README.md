@@ -54,3 +54,22 @@ fetch('https://productapi.shardweb.app/deleteproducts?id=idaqui', {
   }
 });
 ```
+
+## /updateproducts
+### Note: the imgUrl must be in Base64
+How to use:
+```js
+fetch(https://productapi.shardweb.app/updateproducts, {
+  method: 'PATCH',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    id: 2
+    name: "Pizza",
+    description: "Pizza Napolitana",
+    price: "20",
+    imgUrl: "base64 da img"
+  })
+});
+```
