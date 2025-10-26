@@ -18,10 +18,6 @@ builder.Services.AddCors(options =>
         });
 });
 
-var app = builder.Build();
-
-app.UseCors("AllowAll");
-
 AppContext.SetSwitch("System.Net.DisableIPv6", true);
 
 DotEnv.Load();
@@ -41,13 +37,20 @@ if (string.IsNullOrEmpty(cloudinaryUrl))
 
 CloudinaryService cloudinary = new CloudinaryService(cloudinaryUrl);
 
+var app = builder.Build();
+
+app.UseCors("AllowAll");
+app.UseRouting();
+app.UseAuthorization();
+
+app.UseHttpsRedirection();
+
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
 
 app.MapGet("/test", () => "API está rodando!");
 
