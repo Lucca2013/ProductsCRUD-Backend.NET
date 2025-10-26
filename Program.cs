@@ -18,6 +18,8 @@ builder.Services.AddCors(options =>
         });
 });
 
+builder.Services.AddAuthorization();
+
 AppContext.SetSwitch("System.Net.DisableIPv6", true);
 
 DotEnv.Load();
@@ -39,11 +41,10 @@ CloudinaryService cloudinary = new CloudinaryService(cloudinaryUrl);
 
 var app = builder.Build();
 
-app.UseCors("AllowAll");
-app.UseRouting();
-app.UseAuthorization();
-
 app.UseHttpsRedirection();
+app.UseRouting();
+app.UseCors("AllowAll");
+app.UseAuthorization();
 
 
 if (app.Environment.IsDevelopment())
