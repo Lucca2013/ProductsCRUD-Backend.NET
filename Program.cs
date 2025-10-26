@@ -41,8 +41,8 @@ CloudinaryService cloudinary = new CloudinaryService(cloudinaryUrl);
 
 var app = builder.Build();
 
-app.UseCors("AllowAll");
 app.UseRouting();
+app.UseCors("AllowAll");
 app.UseAuthorization();
 
 app.UseHttpsRedirection();
@@ -82,7 +82,8 @@ app.MapGet("/getproducts", async () =>
         }
 
         return Results.Ok(products);
-    } catch(Exception err)
+    }
+    catch (Exception err)
     {
         System.Console.WriteLine("err: " + err);
         return Results.Conflict("erro, entrou em catch");
@@ -134,7 +135,7 @@ app.MapPost("/postproducts", async (PostProducts product) =>
     return Results.Ok();
 });
 
-app.MapDelete("/deleteproducts", async (string id) =>
+app.MapDelete("/deleteproducts", async (int id) =>
 {
     Console.WriteLine(id);
 
@@ -150,6 +151,62 @@ app.MapDelete("/deleteproducts", async (string id) =>
     int rowsAffected = await SQL.ExecuteNonQueryAsync();
 
     return Results.Ok();
-});
+}).RequireCors("AllowAll");
+
+app.MapPatch("/updateproducts", async (PatchProducts product) =>
+{
+    if (!product.Id.HasValue)
+    {
+        return Results.BadRequest("ID is required");
+    }
+    else if (string.IsNullOrWhiteSpace(product.Name))
+    {
+        return Results.BadRequest("Name is required");
+    }
+    else if (string.IsNullOrWhiteSpace(product.Desc))
+    {
+        return Results.BadRequest("Desc is required");
+    }
+    else if (string.IsNullOrWhiteSpace(product.Price))
+    {
+        return Results.BadRequest("Price is required");
+    }
+    else if (product.ImgUrl == null)
+    {
+        return Results.BadRequest("ImgUrl is required");
+    }
+
+    var imgUrl = await cloudinary.UploadImageAsync(product.ImgUrl, product.Name);
+    Console.WriteLine(imgUrl);
+
+    if (string.IsNullOrWhiteSpace(imgUrl))
+    {
+        return Results.StatusCode(500);
+    }
+
+    using var conn = new NpgsqlConnection(connectionString);
+    await conn.OpenAsync();
+
+    using var SQL = new NpgsqlCommand("""
+        UPDATE products
+        SET name = @name,
+        description = @description,
+        price = @price,
+        img_url = @imgUrl
+        WHERE id = @id;
+    """, conn);
+
+    SQL.Parameters.AddWithValue("@id", product.Id);
+    SQL.Parameters.AddWithValue("@name", product.Name);
+    SQL.Parameters.AddWithValue("@description", product.Desc);
+    SQL.Parameters.AddWithValue("@price", product.Price);
+    SQL.Parameters.AddWithValue("@imgUrl", imgUrl);
+
+    using var reader = await SQL.ExecuteReaderAsync();
+    Console.WriteLine($"Rows updated: {reader}");
+
+    return Results.Ok();
+
+}).RequireCors("AllowAll");
 
 app.Run();

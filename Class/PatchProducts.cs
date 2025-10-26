@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 
 namespace task2Backend
 {
-    public class PostProducts
+    public class PatchProducts
     {
+        public int? Id { get; set; } = null;
         public string Name { get; set; } = string.Empty;
         public string Desc { get; set; } = string.Empty;
         public string Price { get; set; } = string.Empty;
