@@ -209,4 +209,94 @@ app.MapPatch("/updateproducts", async (PatchProducts product) =>
 
 }).RequireCors("AllowAll");
 
+app.MapPut("/updatepartsofproducts", async (PutProducts product) =>
+{
+    if (product.Id == null)
+    {
+        return Results.BadRequest("ID is required");
+    }
+
+    if (!string.IsNullOrWhiteSpace(product.Name))
+    {
+        using var conn = new NpgsqlConnection(connectionString);
+        await conn.OpenAsync();
+
+        using var SQL = new NpgsqlCommand("""
+            UPDATE products
+            SET name = @name
+            WHERE id = @id;
+        """, conn);
+
+        SQL.Parameters.AddWithValue("@id", product.Id);
+        SQL.Parameters.AddWithValue("@name", product.Name);
+
+        using var reader = await SQL.ExecuteReaderAsync();
+        Console.WriteLine($"Rows updated: {reader}");
+    }
+
+    if (!string.IsNullOrWhiteSpace(product.Desc))
+    {
+        using var conn = new NpgsqlConnection(connectionString);
+        await conn.OpenAsync();
+
+        using var SQL = new NpgsqlCommand("""
+            UPDATE products
+            SET description = @description
+            WHERE id = @id;
+        """, conn);
+
+        SQL.Parameters.AddWithValue("@id", product.Id);
+        SQL.Parameters.AddWithValue("@description", product.Desc);
+
+        using var reader = await SQL.ExecuteReaderAsync();
+        Console.WriteLine($"Rows updated: {reader}");
+    }
+
+    if (!string.IsNullOrWhiteSpace(product.Price))
+    {
+        using var conn = new NpgsqlConnection(connectionString);
+        await conn.OpenAsync();
+
+        using var SQL = new NpgsqlCommand("""
+            UPDATE products
+            SET price = @price
+            WHERE id = @id;
+        """, conn);
+
+        SQL.Parameters.AddWithValue("@id", product.Id);
+        SQL.Parameters.AddWithValue("@price", product.Price);
+
+        using var reader = await SQL.ExecuteReaderAsync();
+        Console.WriteLine($"Rows updated: {reader}");
+    }
+
+    if (product.ImgUrl != null)
+    {
+        var imgUrl = await cloudinary.UploadImageAsync(product.ImgUrl, product.Id.ToString());
+        Console.WriteLine(imgUrl);
+
+        if (string.IsNullOrWhiteSpace(imgUrl))
+        {
+            return Results.StatusCode(500);
+        }
+
+        using var conn = new NpgsqlConnection(connectionString);
+        await conn.OpenAsync();
+
+        using var SQL = new NpgsqlCommand("""
+            UPDATE products
+            SET img_url = @imgUrl
+            WHERE id = @id;
+        """, conn);
+
+        SQL.Parameters.AddWithValue("@id", product.Id);
+        SQL.Parameters.AddWithValue("@imgUrl", product.ImgUrl);
+
+        using var reader = await SQL.ExecuteReaderAsync();
+        Console.WriteLine($"Rows updated: {reader}");
+    }
+
+    return Results.Ok();
+}).RequireCors("AllowAll");
+
 app.Run();
