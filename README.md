@@ -73,3 +73,22 @@ fetch(https://productapi.shardweb.app/updateproducts, {
   })
 });
 ```
+
+## /updatepartsofproducts
+### Note: you just need to fill in the fields you need to move
+How to use:
+```js
+fetch(https://productapi.shardweb.app/updatepartsofproducts, {
+  method: 'PUT',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    id: 2 //MANDATORY
+    name: "Pizza", //OPCIONAL
+    description: "Pizza Napolitana", //OPCIONAL
+    price: "20", //OPCIONAL
+    imgUrl: "base64 da img" //OPCIONAL
+  })
+});
+```
