@@ -56,7 +56,7 @@ fetch('https://productapi.shardweb.app/deleteproducts?id=idaqui', {
 ```
 
 ## /updateproducts
-### Note: the imgUrl must be in Base64
+### Note: you need to fill all the Fields 
 How to use:
 ```js
 fetch(https://productapi.shardweb.app/updateproducts, {
