@@ -1,6 +1,6 @@
 # ProductsCRUD API
 ### ProductsCRUD was an API I developed to train my C# .NET WEB skills. <br>
-### It has three HTTP requests to create, view, and delete products. One of its distinguishing features is that it supports images, receiving base64 via POST and returning a public image link for the frontend to use via GET.
+### It has five HTTP requests to create, view, update and delete products. One of its distinguishing features is that it supports images, receiving base64 via POST and returning a public image link for the frontend to use via GET.
 
 # Technologies used
 
